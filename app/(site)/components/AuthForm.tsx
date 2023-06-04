@@ -6,6 +6,7 @@ import clsx from "clsx";
 import Input from "@/app/components/inputs/Input";
 import AuthSocialButton from "@/app/(site)/components/AuthSocialButton";
 import {BsGithub, BsGoogle} from "react-icons/bs";
+import axios from "axios";
 
 type VARIANT = 'LOGIN' | 'REGISTER';
 const AuthForm = () => {
@@ -31,7 +32,7 @@ const AuthForm = () => {
         if (variant === 'LOGIN') {
             // Login NextAuth
         } else {
-            // Register
+            axios.post('/api/auth/register', data)
         }
     }
     const socialActions = (action: string) => {
