@@ -1,12 +1,15 @@
 'use client';
 
-import {useCallback, useState} from "react";
-import {FieldValues, SubmitHandler, useForm} from "react-hook-form";
+import { useCallback, useState } from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import clsx from "clsx";
 import Input from "@/app/components/inputs/Input";
 import AuthSocialButton from "@/app/(site)/components/AuthSocialButton";
-import {BsGithub, BsGoogle} from "react-icons/bs";
+import { BsGithub, BsGoogle } from "react-icons/bs";
 import axios from "axios";
+import { toast } from "react-hot-toast";
+import * as yup from 'yup';
+
 
 type VARIANT = 'LOGIN' | 'REGISTER';
 const AuthForm = () => {
@@ -18,21 +21,50 @@ const AuthForm = () => {
     const {
         register,
         handleSubmit,
-        formState: {errors},
+        formState: { errors },
     } = useForm<FieldValues>({
         defaultValues: {
             name: '',
             email: '',
             password: '',
             passwordConfirm: '',
-        }
+        }, 
+        mode: 'onBlur',
     });
+
+    const registrationSchema = yup.object().shape({
+        name: yup.string().required('Name is required'),
+        email: yup.string().email('Email is invalid').required('Email is required'),
+        password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+        passwordConfirm: yup.string().oneOf([yup.ref('password')], 'Passwords must match').required('Confirm Password is required'),
+    });
+
+    const loginSchema = yup.object().shape({
+        email: yup.string().email('Email is invalid').required('Email is required'),
+        password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+    });
+    
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         setIsloading(true);
         if (variant === 'LOGIN') {
             // Login NextAuth
         } else {
-            axios.post('/api/auth/register', data)
+            registrationSchema.validate(data).then(
+                () => {
+                    axios.post('/api/register', data)
+                        .catch((err) => {
+                            toast.error(err.response.data);
+                        })
+                        .finally(() => {
+                            setIsloading(false);
+                        })
+                }
+            ).catch(
+                (err) => {
+                    toast.error(err.message);
+                    setIsloading(false);
+                }
+            )
         }
     }
     const socialActions = (action: string) => {
@@ -46,20 +78,20 @@ const AuthForm = () => {
                 {variant === 'LOGIN' && (
                     'Sign in to your account'
                 ) || (
-                    'Create your account'
-                )}
+                        'Create your account'
+                    )}
             </h2>
             <div className="mt-8 sm:sm-auto sm:w-full sm:max-w-md">
                 <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
                     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                         {variant === 'REGISTER' && (
-                            <Input id="name" label="Name" type="text" register={register} errors={errors}/>
+                            <Input id="name" label="Name" type="text" register={register} errors={errors} />
                         )}
-                        <Input id="email" label="Email" type="email" register={register} errors={errors}/>
-                        <Input id="password" label="Password" type="password" register={register} errors={errors}/>
+                        <Input id="email" label="Email" type="email" register={register} errors={errors} />
+                        <Input id="password" label="Password" type="password" register={register} errors={errors} />
                         {variant === 'REGISTER' && (
                             <Input id="passwordConfirm" label="Confirm Password" type="password" register={register}
-                                   errors={errors}/>
+                                errors={errors} />
                         )}
                         <div className="flex items-center justify-between">
                             <div className="flex items-center">
