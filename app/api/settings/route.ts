@@ -3,12 +3,12 @@ import { getCurrentuser } from "@/app/services/user.service";
 import prisma from "@/app/libs/prismadb";
 
 export async function POST(request: Request) {
-    try{
+    try {
         const user = await getCurrentuser();
         const body = await request.json();
-        const {name , image} = body;
+        const { name, image } = body;
 
-        if(!user?.id || !user?.email){
+        if (!user?.id || !user?.email) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         })
 
         return new NextResponse("User updated", { status: 200 });
-    }catch(err){
+    } catch (err) {
         console.log(err);
         return new NextResponse("Something went wrong", { status: 500 });
     }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import clsx from "clsx";
 import Input from "@/app/components/inputs/Input";
@@ -9,6 +9,8 @@ import { BsGithub, BsGoogle } from "react-icons/bs";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import * as yup from 'yup';
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 
 type VARIANT = 'LOGIN' | 'REGISTER';
@@ -28,7 +30,7 @@ const AuthForm = () => {
             email: '',
             password: '',
             passwordConfirm: '',
-        }, 
+        },
         mode: 'onBlur',
     });
 
@@ -43,18 +45,51 @@ const AuthForm = () => {
         email: yup.string().email('Email is invalid').required('Email is required'),
         password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
     });
-    
+
+    const { setValue } = useForm<FieldValues>();
+
+    const session = useSession();
+    const router = useRouter();
+    useEffect(() => {
+        if (session?.status === 'authenticated') {
+            console.log('authenticated');
+            router.push('/users');
+        }
+    }, [session?.status, router]);
+
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         setIsloading(true);
         if (variant === 'LOGIN') {
-            // Login NextAuth
+            signIn('credentials', {
+                ...data,
+                redirect: false
+            })
+                .then((callback) => {
+                    if (callback?.error) {
+                        toast.error('Invalid credentials!');
+                    }
+
+                    if (callback?.ok) {
+                        router.push('/conversations')
+                    }
+                })
+                .finally(() => setIsloading(false))
         } else {
             registrationSchema.validate(data).then(
                 () => {
                     axios.post('/api/register', data)
+                        .then((response) => {
+                            toast.success('Registered successfully redirecting to login page ...');
+                            setTimeout(() => {
+                                setVariant('LOGIN');
+                                setValue('email', data.email);
+                            }
+                                , 2000);
+                        })
                         .catch((err) => {
                             toast.error(err.response.data);
                         })
+
                         .finally(() => {
                             setIsloading(false);
                         })
@@ -70,7 +105,17 @@ const AuthForm = () => {
     const socialActions = (action: string) => {
         setIsloading(true);
 
-        //nextAuth social login
+        signIn(action, { redirect: false })
+            .then((callback) => {
+                if (callback?.error) {
+                    toast.error('Invalid credentials!');
+                }
+
+                if (callback?.ok) {
+                    router.push('/conversations')
+                }
+            })
+            .finally(() => setIsloading(false));
     }
     return (
         <>

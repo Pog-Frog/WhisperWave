@@ -65,8 +65,37 @@ const deleteConversation = async (id: string) => {
     }
 }
 
+const getConversationById = async (id: string) => {
+    try{
+        const conversation = await prisma.conversation.findUnique({
+            where: {
+                id
+            },
+            include: {
+                users: true,
+                messages: {
+                    include: {
+                        sender: true,
+                        seen: true
+                    },
+                    orderBy: {
+                        createdAt: 'asc'
+                    }
+                }
+            }
+        });
+
+        return conversation;
+    }
+    catch(err){
+        console.log(err);
+        return null;
+    }
+}
+
 export {
     getAll,
     create,
-    deleteConversation
+    deleteConversation,
+    getConversationById
 }

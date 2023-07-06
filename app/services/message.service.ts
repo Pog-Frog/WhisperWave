@@ -1,6 +1,6 @@
 import prisma from "@/app/libs/prismadb";
 
-const getAll = async (conversationId: string) => {
+const getAllMessages = async (conversationId: string) => {
     try{
         const messages = await prisma.message.findMany({
             where: {
@@ -54,7 +54,7 @@ const deleteMessage = async (id: string) => {
 }
 
 export {
-    getAll,
+    getAllMessages,
     create,
     deleteMessage
 }
