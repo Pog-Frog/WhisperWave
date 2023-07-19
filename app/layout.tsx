@@ -6,8 +6,8 @@ import AuthContext from "@/app/context/auth.context";
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Messenger clone',
-  description: 'This is a messenger clone done in Next.js',
+  title: 'WhisperWave',
+  description: 'Messenging app',
 }
 
 export default function RootLayout({
