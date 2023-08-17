@@ -1,5 +1,5 @@
-import {getConversationById} from "@/app/services/conversation.service";
-import {getAllMessages} from "@/app/services/message.service";
+import getConversationById from "@/app/actions/getConversationById";
+import getMessages from "@/app/actions/getMessages";
 
 import Header from "./components/Header";
 import Body from "./components/Body";
@@ -12,7 +12,7 @@ interface IParams {
 
 const ChatId = async ({ params }: { params: IParams }) => {
   const conversation = await getConversationById(params.conversationId);
-  const messages = await getAllMessages(params.conversationId);
+  const messages = await getMessages(params.conversationId);
 
   if (!conversation) {
     return (

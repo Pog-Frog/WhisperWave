@@ -1,5 +1,5 @@
-import {getAll} from "@/app/services/conversation.service";
-import {getAllusers} from "@/app/services/user.service";
+import getConversations from "../actions/getConversations";
+import getUsers from "../actions/getUsers";
 import Sidebar from "../components/sidebar/Sidebar";
 import ConversationList from "./components/ConversationList";
 
@@ -8,8 +8,8 @@ export default async function ConversationsLayout({
 }: {
   children: React.ReactNode,
 }) {
-  const conversations = await getAll();
-  const users = await getAllusers();
+  const conversations = await getConversations();
+  const users = await getUsers();
 
   return (
     // @ts-expect-error Server Component
