@@ -23,7 +23,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div
+          <div 
             className="
               fixed 
               inset-0 
@@ -35,7 +35,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div
+          <div 
             className="
               flex 
               min-h-full 
@@ -55,7 +55,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel
+              <Dialog.Panel 
                 className="
                   relative 
                   transform 
@@ -75,7 +75,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
                   sm:p-6
                 "
               >
-                <div
+                <div 
                   className="
                     absolute 
                     right-0 

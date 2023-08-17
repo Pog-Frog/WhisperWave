@@ -7,7 +7,7 @@ import { ClipLoader } from 'react-spinners';
 const LoadingModal = () => {
   return (
     <Transition.Root show as={Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={() => { }}>
+      <Dialog as="div" className="relative z-50" onClose={() => {}}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -17,7 +17,7 @@ const LoadingModal = () => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div
+          <div 
             className="
               fixed 
               inset-0 
@@ -29,7 +29,7 @@ const LoadingModal = () => {
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div
+          <div 
             className="
               flex 
               min-h-full 
